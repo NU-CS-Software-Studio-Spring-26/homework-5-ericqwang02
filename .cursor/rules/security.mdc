@@ -1,0 +1,28 @@
+---
+description: Security constraints for AI-generated code
+alwaysApply: true
+---
+# Security rules (all AI-generated changes)
+
+## Secrets and credentials
+
+- Never write, log, print, or echo **secrets**: API keys, passwords, tokens, `RAILS_MASTER_KEY`, production DB URLs, or contents of `.env`, `config/master.key`, `config/credentials/*.key`, or `.kamal/secrets`.
+- Do not hardcode credentials in Ruby, ERB, JavaScript, seeds, fixtures, or tests. Use Rails credentials or environment variables only when explicitly required.
+- Do not commit or suggest committing secret files. Redact secrets in examples and error messages.
+
+## Injection and unsafe code
+
+- **No `eval`, `instance_eval`, `class_eval`, or `constantize` on user-controlled input** (`params`, request headers, cookies, uploaded filenames).
+- **No `html_safe` or `raw`** on untrusted data (e.g. `todo.description`, flash messages built from params). Use default ERB escaping (`<%= %>`).
+- **SQL:** Use Active Record (`Todo.where(...)`, `find`, `save`) or `sanitize_sql_array` when raw SQL is unavoidable. **Never** build SQL with string interpolation of user input (e.g. `"SELECT ... #{params[:q]}"` or `find_by_sql("... #{params[:id]}")`).
+
+## Rails protections (do not weaken)
+
+- **CSRF:** Do not use `skip_before_action :verify_authenticity_token`, disable forgery protection globally, or remove `csrf_meta_tags` / `form_with` CSRF behavior to “fix” AJAX. Fix forms/Turbo/Stimulus the Rails way.
+- **Mass assignment:** Do not assign from `params` directly to models. Use private strong parameters (`params.expect(todo: [...])` in `TodosController`) and permit only intended columns.
+- **Devise / sessions:** This app has no Devise today. If authentication is added, **do not** skip Devise’s `authenticate_user!` / session checks or disable lockable/timeoutable protections without explicit approval.
+
+## Dependencies and review
+
+- **No new gems** (especially auth, HTTP, or security-related) without explicit approval.
+- After security-sensitive changes, mention running `bin/brakeman` when appropriate.

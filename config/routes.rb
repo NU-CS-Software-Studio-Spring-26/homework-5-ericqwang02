@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
-  resources :todos
-  get '/hello', to: 'todos#hello'
+  resources :todos do
+    member do
+      patch :toggle_high_priority
+    end
+  end
+  get "/hello", to: "todos#hello"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -12,5 +16,5 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "todos#index"
 end

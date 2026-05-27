@@ -1,0 +1,8 @@
+.env
+.env.*
+config/master.key
+config/credentials/*.key
+tmp/
+log/
+storage/
+node_modules/

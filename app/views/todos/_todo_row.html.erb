@@ -1,0 +1,17 @@
+<div id="<%= dom_id(todo, :row) %>" class="todo-row<%= " high-priority" if todo.high_priority? %>">
+  <p>
+    <strong>Description:</strong>
+    <%= todo.description %>
+  </p>
+
+  <%= button_to toggle_high_priority_todo_path(todo),
+        method: :patch,
+        form: { data: { turbo_stream: true } },
+        aria: { pressed: todo.high_priority? } do %>
+    <%= todo.high_priority? ? "★ High priority" : "☆ Normal" %>
+  <% end %>
+
+  <p>
+    <%= link_to "Show this todo", todo %>
+  </p>
+</div>
