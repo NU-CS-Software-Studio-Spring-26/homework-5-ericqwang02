@@ -6,10 +6,7 @@
 
 <div id="todos">
   <% @todos.each do |todo| %>
-    <%= render todo %>
-    <p>
-      <%= link_to "Show this todo", todo %>
-    </p>
+    <%= render "todos/todo_row", todo: todo %>
   <% end %>
 </div>
 
