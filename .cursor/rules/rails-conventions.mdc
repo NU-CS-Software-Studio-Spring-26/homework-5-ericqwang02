@@ -1,0 +1,27 @@
+---
+description: Rails 8 conventions for the sample todo app
+alwaysApply: true
+---
+# Rails conventions (Todo app)
+
+- **Scope:** This is a single-domain **Todo** app. Do not add User/Post/etc. models, copy migrations from other projects, or expand schema beyond `todos` unless the task requires it.
+
+- **Generators:** Prefer `bin/rails generate` (model, migration, controller, scaffold pieces) over hand-written boilerplate. Match existing file layout and naming (`Todo`, `TodosController`, `app/views/todos/`).
+
+- **MVC:** Controllers stay thin; persistence/validation in `app/models/todo.rb`; HTML in ERB under `app/views/todos/`; shared markup in partials (`_form`, `_todo`). No business logic in views.
+
+- **Routing:** Use `config/routes.rb` RESTfully (`resources :todos`). Add new actions explicitly; do not invent ad-hoc routes when a REST action fits.
+
+- **Strong parameters:** Never mass-assign from `params` directly. Follow `TodosController`: private `todo_params` using **`params.expect(todo: [...])`** and `params.expect(:id)` in `set_todo`. When adding columns (e.g. `due_date`), update `todo_params`, forms, and tests together.
+
+- **Database:** Change schema only via **reversible migrations** in `db/migrate/` (`change` with reversible steps, or `up`/`down`). Do not edit `db/schema.rb` by hand. Keep SQLite paths under `storage/` as in `config/database.yml`.
+
+- **Controllers:** Keep the scaffold patterns: `before_action :set_todo` for member actions; `respond_to` for HTML and JSON; redirects with `status: :see_other` on update/destroy; JSON via Jbuilder views where they already exist.
+
+- **Views & Hotwire:** Use `form_with`, `link_to`, and Turbo-friendly defaults. Prefer **Turbo** (frames/streams) and **Stimulus** (`app/javascript/controllers/`) over custom fetch/XHR or inline `<script>` in ERB. Pin new JS with `bin/importmap pin`, not npm.
+
+- **JSON:** HTML uses ERB; JSON uses existing **Jbuilder** templates (`*.json.jbuilder`), not hand-built hashes in controllers unless the task is trivial.
+
+- **Tests:** Use **Minitest** in `test/` with fixtures (`test/fixtures/todos.yml`). Add/update controller, model, or system tests for behavior you change; run `bin/rails test` (and `test:system` when UI changes).
+
+- **Style & diff size:** Follow **RuboCop Rails Omakase** (`bin/rubocop`). Match existing patterns; minimal, task-focused diffs—no unrelated refactors or stack changes (no Postgres, Redis, React, webpack).
